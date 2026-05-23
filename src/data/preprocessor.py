@@ -66,8 +66,8 @@ def codificar_load_status(data_frame, col = "Load_Type") :
 
     return data_frame_copia, MAPEO_LOAD_TYPE
 
-def preprocesar(data_frame) :
-    df_nuevo = eliminar_features_fuga(data_frame, VALORES_FUGA)
+def preprocesar(data_frame, valores_fuga) :
+    df_nuevo = eliminar_features_fuga(data_frame, valores_fuga)
 
     df_nuevo = codificar_week_status(df_nuevo)
     df_nuevo = codificar_dia_semana(df_nuevo)
