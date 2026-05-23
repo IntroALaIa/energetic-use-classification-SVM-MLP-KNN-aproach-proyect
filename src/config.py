@@ -1,0 +1,1 @@
+VALORES_FUGA = ["Usage_kWh", "CO2(tCO2)"]
