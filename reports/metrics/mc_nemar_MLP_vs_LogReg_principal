@@ -1,0 +1,25 @@
+{
+  "modelo_a": "MLP",
+  "modelo_b": "LogReg",
+  "tabla_contingencia": [
+    [
+      3392,
+      691
+    ],
+    [
+      173,
+      1600
+    ]
+  ],
+  "ambos_correctos": 3392,
+  "solo_a": 691,
+  "solo_b": 173,
+  "ambos_mal": 1600,
+  "estadistico": 309.36226851851853,
+  "resultado": 3.0071192871896786e-69,
+  "alpha": 0.05,
+  "metodo": "chi cuadrado con ajuste",
+  "rechazar_H0": true,
+  "ganador": "MLP",
+  "interpretacion": "Se rechaza H0 con p: 0.0000 < alpha: 0.05\n El MLP es significativamente mejor"
+}

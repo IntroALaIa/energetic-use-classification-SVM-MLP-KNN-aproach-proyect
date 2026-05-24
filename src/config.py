@@ -1,3 +1,5 @@
+import random
+import numpy as np
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]

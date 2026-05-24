@@ -14,7 +14,7 @@ def evaluar_modelos(modelos :dict,
     probas_por_modelo = {}
     predicciones_por_modelo = {}
 
-    for nombre, modelo in [("Dummy", datos["DUMMY"]),("LogReg", datos["LogReg"]),("SVM", datos["SVM"]), ("MLP", datos["MLP"])]:
+    for nombre, modelo in modelos.items():
 
         print(f"{nombre}========================================")
 
@@ -26,24 +26,24 @@ def evaluar_modelos(modelos :dict,
 
 
         metricas = metrics.calcular_metricas(datos["objetivo_test"].values, objetivo_predict, objetivo_proba, nombre_clases)
-        metrics.guardar_metricas(metricas, nombre, METRICS)
+        metrics.guardar_metricas(metricas, f"{nombre}_{sufijo_experimento}", METRICS)
         metricas_todos[nombre] = metricas
 
         visualization.graficar_matriz_confusion(datos["objetivo_test"].values,
                                                 objetivo_predict,
                                                 nombre_clases,
                                                 f"matriz confusión - {nombre}",
-                                                FIGURES / f"matriz_confusion_{nombre}.png",
+                                                FIGURES / f"matriz_confusion_{nombre}_{sufijo_experimento}.png",
                                                 True)
         visualization.graficar_curva_roc_multiclase(datos["objetivo_test"],
                                                     objetivo_proba,
                                                     nombre_clases,
                                                     f"Curva ROC OvR - {nombre}",
-                                                    FIGURES / f"roc_{nombre}.png"
+                                                    FIGURES / f"roc_{nombre}_{sufijo_experimento}.png"
                                                     )
     
     visualization.graficar_roc_comparativa(probas_por_modelo, nombre_clases, FIGURES / "roc_comparativa.png")
-    visualization.graficar_curvas_aprendizaje(datos["MLP"].history, FIGURES / "curvas_aprendizaje_mlp.png")
+    visualization.graficar_curvas_aprendizaje(modelos["MLP"].history, FIGURES / "curvas_aprendizaje_mlp.png")
 
     metrics.imprimir_resumen_comparativo(metricas_todos)
 

@@ -26,5 +26,7 @@ def comparar_modelos_estadisticamente(modelos : dict,
         
         clave = f"{nombre_a}_vs_{nombre_b}"
         statistical.guardar_resultado_mcnemar(resultado, METRICS / f"mc_nemar_{clave}_{sufijo_experimento}")
-        
+
         resultados[clave] = resultado
+
+    return resultados
