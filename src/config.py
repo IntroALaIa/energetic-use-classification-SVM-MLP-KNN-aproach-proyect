@@ -37,3 +37,6 @@ MLP_CONFIG = {
     "patience": 10,                # Epochs sin mejorar antes de parar
 }
 N_CLASES = 3
+
+
+ALPHA_SIGNIFICANCIA = 0.05

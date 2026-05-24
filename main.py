@@ -4,6 +4,7 @@ import src.data.splitter as splitter
 import src.features.engineering as engineering
 import src.evaluation.metrics as metrics
 import src.evaluation.visualization as visualization
+import src.evaluation.statistical as statistical
 
 from src.models.base import BaseModel
 from src.models.svm_model import SVMmodel
@@ -17,7 +18,8 @@ from src.config import (
                         SVM_GRIDSEARCH_SUBSAMPLE,
                         MODELS,
                         FIGURES,
-                        METRICS
+                        METRICS,
+                        ALPHA_SIGNIFICANCIA
                         )
 
 import json
@@ -80,6 +82,7 @@ def main():
 
     metricas_todos = {}
     probas_por_modelo = {}
+    predicciones_por_modelo = {}
 
     nombres = list(mapeo_target.keys())
 
@@ -91,6 +94,7 @@ def main():
         objetivo_proba = modelo.predict_proba(caracteristicas_test_escalado)
 
         probas_por_modelo[nombre] = (objetivo_test.values, objetivo_proba)
+        predicciones_por_modelo[nombre] = objetivo_predict
 
 
         metricas = metrics.calcular_metricas(objetivo_test.values, objetivo_predict, objetivo_proba, nombres)
@@ -112,6 +116,33 @@ def main():
     
     visualization.graficar_roc_comparativa(probas_por_modelo, nombres, FIGURES / "roc_comparativa.png")
     visualization.graficar_curvas_aprendizaje(mlp_model.history, FIGURES / "curvas_aprendizaje_mlp.png")
+
+    resultado_svm_vs_mp = statistical.mcnemar_test(objetivo_test,
+                                                   predicciones_por_modelo["SVM"],
+                                                   predicciones_por_modelo["MLP"],
+                                                   nombre_a = "SVM",
+                                                   nombre_b = "MLP",
+                                                   alpha = ALPHA_SIGNIFICANCIA)
+    statistical.imprimir_resultado_mcnemar(resultado_svm_vs_mp)
+    statistical.guardar_resultado_mcnemar(resultado_svm_vs_mp, METRICS / "svm_vs_mlp_mcnemar.json")
+
+    resultado_svm_vs_logreg = statistical.mcnemar_test(objetivo_test,
+                                                   predicciones_por_modelo["SVM"],
+                                                   predicciones_por_modelo["LogReg"],
+                                                   nombre_a = "SVM",
+                                                   nombre_b = "LogReg",
+                                                   alpha = ALPHA_SIGNIFICANCIA)
+    statistical.imprimir_resultado_mcnemar(resultado_svm_vs_logreg)
+    statistical.guardar_resultado_mcnemar(resultado_svm_vs_logreg, METRICS / "svm_vs_logReg_mcnemar.json")
+
+    resultado_mlp_vs_logreg = statistical.mcnemar_test(objetivo_test,
+                                                   predicciones_por_modelo["MLP"],
+                                                   predicciones_por_modelo["LogReg"],
+                                                   nombre_a = "MLP",
+                                                   nombre_b = "LogReg",
+                                                   alpha = ALPHA_SIGNIFICANCIA)
+    statistical.imprimir_resultado_mcnemar(resultado_mlp_vs_logreg)
+    statistical.guardar_resultado_mcnemar(resultado_mlp_vs_logreg, METRICS / "logReg_vs_mlp_mcnemar.json")
 
 
 

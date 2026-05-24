@@ -1,0 +1,25 @@
+{
+  "modelo_a": "SVM",
+  "modelo_b": "LogReg",
+  "tabla_contingencia": [
+    [
+      3393,
+      678
+    ],
+    [
+      172,
+      1613
+    ]
+  ],
+  "ambos_correctos": 3393,
+  "solo_a": 678,
+  "solo_b": 172,
+  "ambos_mal": 1613,
+  "estadistico": 300.02941176470586,
+  "resultado": 3.246112286448218e-67,
+  "alpha": 0.05,
+  "metodo": "chi cuadrado con ajuste",
+  "rechazar_H0": true,
+  "ganador": "SVM",
+  "interpretacion": "Se rechaza H0 con p: 0.0000 < alpha: 0.05\n El SVM es significativamente mejor"
+}

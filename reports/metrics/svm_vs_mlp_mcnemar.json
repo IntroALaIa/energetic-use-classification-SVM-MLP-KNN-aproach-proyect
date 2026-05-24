@@ -1,0 +1,25 @@
+{
+  "modelo_a": "SVM",
+  "modelo_b": "MLP",
+  "tabla_contingencia": [
+    [
+      3954,
+      160
+    ],
+    [
+      117,
+      1625
+    ]
+  ],
+  "ambos_correctos": 3954,
+  "solo_a": 160,
+  "solo_b": 117,
+  "ambos_mal": 1625,
+  "estadistico": 6.368231046931408,
+  "resultado": 0.011618135374692182,
+  "alpha": 0.05,
+  "metodo": "chi cuadrado con ajuste",
+  "rechazar_H0": true,
+  "ganador": "SVM",
+  "interpretacion": "Se rechaza H0 con p: 0.0116 < alpha: 0.05\n El SVM es significativamente mejor"
+}

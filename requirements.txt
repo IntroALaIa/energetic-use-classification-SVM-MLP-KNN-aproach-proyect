@@ -25,6 +25,7 @@ opt_einsum==3.4.0
 optree==0.19.1
 packaging==26.2
 pandas==2.3.3
+patsy==1.0.2
 pillow==12.2.0
 protobuf==7.35.0
 Pygments==2.20.0
@@ -37,6 +38,7 @@ scikit-learn==1.7.2
 scipy==1.15.3
 seaborn==0.13.2
 six==1.17.0
+statsmodels==0.14.6
 tensorflow==2.21.0
 termcolor==3.3.0
 threadpoolctl==3.6.0
