@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 class BaseModel(ABC):
 
     @abstractmethod 
-    def fit(self, x_train, y_train, x_val = None, y_vañl = None) -> None :
+    def fit(self, x_train, y_train, x_evaluar = None, y_evaluar = None) -> None :
         pass
 
     @abstractmethod 

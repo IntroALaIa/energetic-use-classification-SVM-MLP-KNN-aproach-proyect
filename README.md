@@ -35,3 +35,24 @@ steel_load_classification/
 ├── requirements.txt
 ├── README.md
 └── main.py
+
+### src/data
+
+## src/data/loader.py
+Propósito. Este módulo es el portero del proyecto. Recibe el CSV crudo del disco y devuelve un DataFrame que el resto del sistema puede asumir válido. Si algo está mal con el archivo (columnas faltantes, fechas que no parsean, nulls inesperados), falla aquí, no a las 3 horas de entrenamiento. La filosofía: fail fast, fail loud.
+
+## src/data/preprocessor.py
+Propósito. Limpiar y codificar columnas para que los modelos las puedan consumir. Es importante lo que este módulo no hace:
+No filtra filas (no es el splitter).
+No crea features nuevas (eso es engineering.py).
+No escala valores numéricos (eso es después del split, fit solo en train).
+No toca la columna date (se necesita para el split, se descarta más adelante en main.py).
+Es decir, preprocessor transforma columnas existentes una a una. Limpia, no inventa.
+
+## src/data/splitter.py
+Especificación...
+Propósito del módulo. Particionar el dataset respetando el orden temporal, ofrecer una utilidad para submuestreo estratificado (que solo se usará en el grid search de SVM), y validar que los splits cumplan los invariantes que necesitamos. Si este módulo está mal, todo el experimento queda inválido aunque los modelos entrenen bien.
+
+## src/features/engineering.py
+Propósito. Crear features derivadas a partir de las columnas existentes. Específicamente: codificar las variables cíclicas (NSM y Day_of_week) como pares seno/coseno para que los modelos puedan capturar la cercanía temporal real (23:59 <-> 00:01, domingo <-> sábado).
+Este módulo no limpia (eso es preprocessor), no escala (eso es después del split), y no toca el target. Solo transforma features cíclicas.
