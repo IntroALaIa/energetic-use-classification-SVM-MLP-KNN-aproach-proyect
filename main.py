@@ -2,6 +2,7 @@ import src.data.loader as loader
 import src.data.preprocessor as preprocessor
 import src.data.splitter as splitter
 import src.features.engineering as engineering
+import src.evaluation.metrics as metrics
 
 from src.models.base import BaseModel
 from src.models.svm_model import SVMmodel
@@ -14,7 +15,8 @@ from src.config import (
                         SVM_GRID,
                         SVM_GRIDSEARCH_SUBSAMPLE,
                         MODELS,
-                        FIGURES
+                        FIGURES,
+                        METRICS
                         )
 
 import json
@@ -39,7 +41,7 @@ def main():
     train, evaluar, test = splitter.dividir_temporal(df, "date", MESES_ENTRENAMIENTO, MESES_EVALUACION)
     reporte = splitter.verificar_split(train, evaluar, test, "Load_Type", "date")
 
-    print(f"Reporte de los splits:\n{reporte}")
+    print(f"Reporte de los splits:\n{json.dumps(reporte, indent = 2, default=str)}")
 
     #Separar los sets em caracteristicas y objetivos
     objetivo_train = train["Load_Type"]
@@ -63,20 +65,35 @@ def main():
     svm_model.fit(caracteristicas_train_escalado, objetivo_train, "Load_Type")
 
     objetivo_predict = svm_model.predict(caracteristicas_test_escalado)
-    print(f"[Main] f1 report: {f1_score(objetivo_test, objetivo_predict, average = 'macro'):.4f}\n\n\n ")
 
     mlp_model : BaseModel = MLPmodel(n_features = caracteristicas_train_escalado.shape[1])
     mlp_model.fit(caracteristicas_train_escalado, objetivo_train,
                   caracteristicas_evaluar_escalado, objetivo_evaluar)
     mlp_model.save( MODELS / "mlp_model.keras")
 
-    for nombre, modelo in [("SVM", svm_model), ("MLP", mlp_model)]:
+    dummy = DummyClassifier(strategy='stratified', random_state=SEMILLA)
+    dummy.fit(caracteristicas_train_escalado, objetivo_train)
+
+    logreg = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=SEMILLA)
+    logreg.fit(caracteristicas_train_escalado, objetivo_train)
+
+    metricas_todos = {}
+
+    for nombre, modelo in [("Dummy", dummy),("LogReg", logreg),("SVM", svm_model), ("MLP", mlp_model)]:
+
         print(f"{nombre}========================================")
+
         objetivo_predict = modelo.predict(caracteristicas_test_escalado)
-        print(f"[Main] f1 report: {f1_score(objetivo_test, objetivo_predict, average = 'macro'):.4f}\n\n\n ")
-        print(f"[Main] reporte:\n{classification_report(objetivo_test, objetivo_predict, target_names = mapeo_target.keys())} ")
+        objetivo_proba = modelo.predict_proba(caracteristicas_test_escalado)
 
+        metricas = metrics.calcular_metricas(objetivo_test.values, objetivo_predict, objetivo_proba, list(mapeo_target.keys()))
+        metrics.guardar_metricas(metricas, nombre, METRICS)
+        metricas_todos[nombre] = metricas
 
+        #print(f"[Main] f1 report: {f1_score(objetivo_test, objetivo_predict, average = 'macro'):.4f}\n\n\n ")
+        #print(f"[Main] reporte:\n{classification_report(objetivo_test, objetivo_predict, target_names = mapeo_target.keys())} ")
+
+    metrics.imprimir_resumen_comparativo(metricas_todos)
     # Concatene los tres splits con una columna que diga cuál
     train["split"] = "train"
     evaluar["split"] = "val"
@@ -94,18 +111,6 @@ def main():
         plt.title(f)
         plt.show()
         plt.savefig(FIGURES / f"{f}_image.png")
-
-   
-
-    dummy = DummyClassifier(strategy='stratified', random_state=SEMILLA)
-    dummy.fit(caracteristicas_train_escalado, objetivo_train)
-    y_pred_dummy = dummy.predict(caracteristicas_test_escalado)
-    print(f"Dummy F1 macro: {f1_score(objetivo_test, y_pred_dummy, average='macro'):.4f}")
-
-    logreg = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=SEMILLA)
-    logreg.fit(caracteristicas_train_escalado, objetivo_train)
-    y_pred_logreg = logreg.predict(caracteristicas_test_escalado)
-    print(f"LogReg F1 macro: {f1_score(objetivo_test, y_pred_logreg, average='macro'):.4f}")
 
 
 if __name__ == "__main__":
