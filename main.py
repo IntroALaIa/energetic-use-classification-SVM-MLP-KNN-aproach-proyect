@@ -3,6 +3,7 @@ import src.data.preprocessor as preprocessor
 import src.data.splitter as splitter
 import src.features.engineering as engineering
 import src.evaluation.metrics as metrics
+import src.evaluation.visualization as visualization
 
 from src.models.base import BaseModel
 from src.models.svm_model import SVMmodel
@@ -78,6 +79,9 @@ def main():
     logreg.fit(caracteristicas_train_escalado, objetivo_train)
 
     metricas_todos = {}
+    probas_por_modelo = {}
+
+    nombres = list(mapeo_target.keys())
 
     for nombre, modelo in [("Dummy", dummy),("LogReg", logreg),("SVM", svm_model), ("MLP", mlp_model)]:
 
@@ -86,12 +90,30 @@ def main():
         objetivo_predict = modelo.predict(caracteristicas_test_escalado)
         objetivo_proba = modelo.predict_proba(caracteristicas_test_escalado)
 
-        metricas = metrics.calcular_metricas(objetivo_test.values, objetivo_predict, objetivo_proba, list(mapeo_target.keys()))
+        probas_por_modelo[nombre] = (objetivo_test.values, objetivo_proba)
+
+
+        metricas = metrics.calcular_metricas(objetivo_test.values, objetivo_predict, objetivo_proba, nombres)
         metrics.guardar_metricas(metricas, nombre, METRICS)
         metricas_todos[nombre] = metricas
 
-        #print(f"[Main] f1 report: {f1_score(objetivo_test, objetivo_predict, average = 'macro'):.4f}\n\n\n ")
-        #print(f"[Main] reporte:\n{classification_report(objetivo_test, objetivo_predict, target_names = mapeo_target.keys())} ")
+        visualization.graficar_matriz_confusion(objetivo_test.values,
+                                                objetivo_predict,
+                                                nombres,
+                                                f"matriz confusión - {nombre}",
+                                                FIGURES / f"matriz_confusion_{nombre}.png",
+                                                True)
+        visualization.graficar_curva_roc_multiclase(objetivo_test,
+                                                    objetivo_proba,
+                                                    nombres,
+                                                    f"Curva ROC OvR - {nombre}",
+                                                    FIGURES / f"roc_{nombre}.png"
+                                                    )
+    
+    visualization.graficar_roc_comparativa(probas_por_modelo, nombres, FIGURES / "roc_comparativa.png")
+    visualization.graficar_curvas_aprendizaje(mlp_model.history, FIGURES / "curvas_aprendizaje_mlp.png")
+
+
 
     metrics.imprimir_resumen_comparativo(metricas_todos)
     # Concatene los tres splits con una columna que diga cuál
