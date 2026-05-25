@@ -4,7 +4,7 @@
     "exactitud_balanceada": 0.6069725340864709,
     "f1_macro": 0.606451876013456,
     "f1_pesado": 0.7111333775387244,
-    "roc_auc_macro": 0.876291156823226
+    "roc_auc_macro": 0.8769280705439533
   },
   "metricas_por_clase": {
     "Light_Load": {
