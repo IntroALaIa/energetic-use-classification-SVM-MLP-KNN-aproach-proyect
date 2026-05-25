@@ -3,23 +3,23 @@
   "modelo_b": "MLP",
   "tabla_contingencia": [
     [
-      3936,
-      178
+      3977,
+      137
     ],
     [
-      105,
-      1637
+      113,
+      1629
     ]
   ],
-  "ambos_correctos": 3936,
-  "solo_a": 178,
-  "solo_b": 105,
-  "ambos_mal": 1637,
-  "estadistico": 18.318021201413426,
-  "resultado": 1.86930477878863e-05,
+  "ambos_correctos": 3977,
+  "solo_a": 137,
+  "solo_b": 113,
+  "ambos_mal": 1629,
+  "estadistico": 2.116,
+  "resultado": 0.14576681181310827,
   "alpha": 0.05,
   "metodo": "chi cuadrado con ajuste",
-  "rechazar_H0": true,
-  "ganador": "SVM",
-  "interpretacion": "Se rechaza H0 con p: 0.0000 < alpha: 0.05\n El SVM es significativamente mejor"
+  "rechazar_H0": false,
+  "ganador": "Empate, sin diferencia significativa",
+  "interpretacion": "No se rechaza H0 con p: 0.1458 >= aplpha: 0.05\n Los modelos son signifcativamente indistinguibles"
 }

@@ -3,20 +3,20 @@
   "modelo_b": "LogReg",
   "tabla_contingencia": [
     [
-      3384,
-      657
+      3392,
+      698
     ],
     [
-      181,
-      1634
+      173,
+      1593
     ]
   ],
-  "ambos_correctos": 3384,
-  "solo_a": 657,
-  "solo_b": 181,
-  "ambos_mal": 1634,
-  "estadistico": 269.24224343675417,
-  "resultado": 1.6598155779826162e-60,
+  "ambos_correctos": 3392,
+  "solo_a": 698,
+  "solo_b": 173,
+  "ambos_mal": 1593,
+  "estadistico": 315.2422502870264,
+  "resultado": 1.5749474796348973e-70,
   "alpha": 0.05,
   "metodo": "chi cuadrado con ajuste",
   "rechazar_H0": true,
